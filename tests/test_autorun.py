@@ -100,11 +100,69 @@ class AutoRunTests(unittest.TestCase):
         self.boy.draw()
         self.assertEqual(len(self.image.clip_draw.call_args.args), 6)
 
+    def test_either_arrow_cancels_autorun_into_normal_run(self):
+        for code, direction in [(SDLK_LEFT, -1), (SDLK_RIGHT, 1)]:
+            with self.subTest(direction=direction):
+                self.boy = Boy()
+                self.key(SDLK_a)
+                self.key(code)
+                self.assertEqual(self.boy.state, 'RUN')
+                self.assertEqual(self.boy.face_dir, direction)
+                self.assertIn(code, self.boy.pressed_directions)
+                x = self.boy.x
+                self.step(0.25)
+                self.assertAlmostEqual(self.boy.x - x, direction * 50)
+                self.boy.draw()
+                self.assertEqual(len(self.image.clip_draw.call_args.args), 6)
+                self.key(code, down=False)
+                self.assertEqual(self.boy.state, 'IDLE')
 
+    def test_a_repeat_cannot_start_or_extend_autorun(self):
+        self.key(SDLK_a, repeat=1)
+        self.assertEqual(self.boy.state, 'IDLE')
+        self.key(SDLK_a)
+        self.step(1)
+        self.key(SDLK_a)
+        self.assertEqual(self.boy.auto_run.started_at, 100)
+        self.now = 105
+        self.boy.update()
+        self.key(SDLK_a, repeat=1)
+        self.assertEqual(self.boy.state, 'IDLE')
 
+    def test_a_is_only_active_in_idle(self):
+        self.step(5)
+        self.key(SDLK_a)
+        self.assertEqual(self.boy.state, 'SLEEP')
+        self.key(SDLK_RIGHT)
+        self.key(SDLK_a)
+        self.assertEqual(self.boy.state, 'RUN')
 
+    def test_space_does_not_cancel_autorun(self):
+        self.key(SDLK_a)
+        self.key(SDLK_SPACE)
+        self.assertEqual(self.boy.state, 'AUTO_RUN')
 
+    def test_idle_sleep_and_space_still_work_after_autorun(self):
+        self.key(SDLK_a)
+        self.step(5)
+        self.step(4.999)
+        self.assertEqual(self.boy.state, 'IDLE')
+        self.now = 110
+        self.boy.update()
+        self.assertEqual(self.boy.state, 'SLEEP')
+        self.key(SDLK_SPACE)
+        self.assertEqual(self.boy.state, 'IDLE')
 
+    def test_overlapping_arrows_work_after_cancel(self):
+        self.key(SDLK_a)
+        self.key(SDLK_LEFT)
+        self.key(SDLK_RIGHT)
+        self.key(SDLK_LEFT, repeat=1)
+        self.assertEqual(self.boy.face_dir, 1)
+        self.key(SDLK_RIGHT, down=False)
+        self.assertEqual((self.boy.state, self.boy.face_dir), ('RUN', -1))
+        self.key(SDLK_LEFT, down=False)
+        self.assertEqual(self.boy.state, 'IDLE')
 
 
 if __name__ == '__main__':
