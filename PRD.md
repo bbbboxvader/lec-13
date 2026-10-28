@@ -45,3 +45,21 @@ python main.py
 | FR-11 | A키 반복 입력은 AutoRun을 연장하거나 재시작하지 않는다. | 이미 AutoRun 중인 A 입력은 무시하고, OS의 키 반복 입력으로 IDLE에서 다시 시작하지 않는다. |
 | FR-12 | 상태 그림을 이미지 파일로 제공한다. | `state_diagram.png`가 실행 폴더와 Git 저장소에 포함된다. |
 
+## 4. 상태와 전환
+
+| 현재 상태 | 조건 또는 입력 | 다음 상태 |
+| --- | --- | --- |
+| 시작 | 게임 초기화 | IDLE |
+| IDLE | IDLE 진입 후 5초 이상 경과 | SLEEP |
+| SLEEP | Space 키 누름 | IDLE |
+| IDLE | 왼쪽/오른쪽 방향키 누름 | RUN |
+| SLEEP | 왼쪽/오른쪽 방향키 누름 | RUN |
+| RUN | 누르고 있던 방향키를 모두 놓음 | IDLE |
+| IDLE | 새로운 A 키 누름 | AutoRun |
+| AutoRun | AutoRun 진입 후 5초 이상 경과 | IDLE |
+| AutoRun | 왼쪽/오른쪽 방향키 누름 | RUN |
+
+AutoRun에서 화면 경계에 도달하면 방향만 반전하며 AutoRun 상태를 유지한다.
+
+![소년 상태 다이어그램](state_diagram.png)
+
