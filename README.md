@@ -42,7 +42,8 @@ VS Code에서는 `main.py`를 실행합니다. 실행하는 Python 환경에 `pi
 - `idle_state.md`: 최종 상태 다이어그램
 - `state_diagram.png`: 저장소에 포함하는 상태 다이어그램 이미지
 - `tests/test_autorun.py`: AutoRun과 기존 상태 동작 검증
-- `commit_history.md`: 이번 작업의 로컬 커밋 30개 목록
+- `commit_history.md`: 이 `lec-13` 저장소의 실제 커밋 30개 목록
+- `PRD.md`: 기능 요구사항, 상태 전환, 조작 및 검증 기준
 
 ## 테스트
 
@@ -50,5 +51,5 @@ VS Code에서는 `main.py`를 실행합니다. 실행하는 Python 환경에 `pi
 python -m unittest discover -s tests -v
 ```
 
-원본 저장소는 `C:\Users\tedu0\2DGP-2023180016`에 있습니다.
-이 폴더에는 실행용 파일과 커밋 목록을 복사했습니다.
+현재 작업 저장소는 [bbbboxvader/lec-13](https://github.com/bbbboxvader/lec-13)입니다.
+코드와 상태 그림, 테스트, PRD 및 커밋 이력은 이 `lec 13` 폴더에서 관리합니다.
